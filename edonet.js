@@ -182,7 +182,15 @@ exports.create = function(){
             for(var i = _nodes.length; --i > 0;){
                 _bounds.encloseVec2(_nodes[i].pos);
             }
+            _center.setVec2(_bounds.getCenter());
         }
+    }
+
+
+    function getPointOutside(theta){
+        return rotateVec2(
+            new Vec2(Math.max(_bounds.getWidth(), _bounds.getHeight()) * 0.5, 0)
+        ).add(_center);
     }
 
 
@@ -269,6 +277,7 @@ exports.create = function(){
     var _chains = [];
 
     var _bounds = new Rect2();
+    var _center = new Vec2();
 
     var _globals = {
         avoidance: 0.025,
@@ -277,6 +286,7 @@ exports.create = function(){
     };
 
     return {
+
         step: function(){
             var i, nl = _nodes.length;
             for(i = nl; --i >= 0;){
@@ -290,6 +300,7 @@ exports.create = function(){
                 _nodes[i].step();
             }
             updateChains();
+            updateBounds();
         },
         drawChains: function(canvas, paint){
             var path = new plask.SkPath();
@@ -319,22 +330,37 @@ exports.create = function(){
             for(var i = _links.length; --i >= 0;)
                 callback(_links[i]);
         },
+
         createNode: createNode,
         deleteNode: deleteNode,
         cutNode:    cutNode,
         deleteLink: deleteSharedLink,
         splitLink:  splitSharedLink,
         cutLink:    cutSharedLink,
+
+        getPointOutside: getPointOutside,
+
         nodes:   _nodes,
         links:   _links,
         globals: _globals,
-        bounds:  _bounds
+        bounds:  _bounds,
+        center:  _center
+
     };
 
 };
 
 
 // Utils
+
+function rotateVec2 = function(v, theta){
+    var st = Math.sin(theta);
+    var ct = Math.cos(theta);
+    return this.set(
+        v.x * ct - v.y * st,
+        v.x * st + v.y * ct
+    );
+};
 
 function regPolyEdgeLen(num_sides){
     return Math.sin(Math.PI / num_sides) * 2;
