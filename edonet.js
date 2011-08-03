@@ -278,7 +278,7 @@ exports.create = function(){
     var _chains = [];
 
     var _bounds = new Rect2();
-    var _center = new Vec2();
+    var _center = new Vec2(0, 0);
 
     var _globals = {
         avoidance: 0.025,
