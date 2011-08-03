@@ -357,7 +357,7 @@ exports.create = function(){
 function rotateVec2(v, theta){
     var st = Math.sin(theta);
     var ct = Math.cos(theta);
-    return this.set(
+    return v.set(
         v.x * ct - v.y * st,
         v.x * st + v.y * ct
     );
