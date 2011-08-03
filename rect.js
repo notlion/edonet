@@ -17,7 +17,11 @@ Rect2.prototype = {
     },
 
     set: function(a, b, c, d){
-        if(arguments.length === 2){ // min, max
+        if(arguments.length === 1){ // minmax
+            this.min = new Vec2(a.x, a.y);
+            this.max = new Vec2(a.x, a.y);
+        }
+        else if(arguments.length === 2){ // min, max
             this.min = new Vec2(a.x, a.y);
             this.max = new Vec2(b.x, b.y);
         }
@@ -54,6 +58,10 @@ Rect2.prototype = {
             max.y = tmp;
         }
         return this;
+    },
+
+    getCenter: function(){
+        return min.lerped(max, 0.5);
     }
 
 };

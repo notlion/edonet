@@ -176,6 +176,15 @@ exports.create = function(){
         }
     }
 
+    function updateBounds(){
+        if(_nodes.length > 0){
+            _bounds.set(_nodes[0].pos);
+            for(var i = _nodes.length; --i > 0;){
+                _bounds.encloseVec2(_nodes[i].pos);
+            }
+        }
+    }
+
 
     function Node(x, y, radius){
         particle.Particle2.call(this);
@@ -259,6 +268,8 @@ exports.create = function(){
     var _links  = [];
     var _chains = [];
 
+    var _bounds = new Rect2();
+
     var _globals = {
         avoidance: 0.025,
         stiffness: 0.1,
@@ -316,7 +327,8 @@ exports.create = function(){
         cutLink:    cutSharedLink,
         nodes:   _nodes,
         links:   _links,
-        globals: _globals
+        globals: _globals,
+        bounds:  _bounds
     };
 
 };
