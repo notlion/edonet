@@ -61,14 +61,14 @@ Rect2.prototype = {
     },
 
     getWidth: function(){
-        return max.x - min.x;
+        return this.max.x - this.min.x;
     },
     getHeight: function(){
-        return max.y - min.y;
+        return this.max.y - this.min.y;
     },
 
     getCenter: function(){
-        return min.lerped(max, 0.5);
+        return this.min.lerped(this.max, 0.5);
     }
 
 };
