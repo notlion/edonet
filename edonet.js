@@ -189,7 +189,8 @@ exports.create = function(){
 
     function getPointOutside(theta){
         return rotateVec2(
-            new Vec2(Math.max(_bounds.getWidth(), _bounds.getHeight()) * 0.5, 0)
+            new Vec2(Math.max(_bounds.getWidth(), _bounds.getHeight()) * 0.5, 0),
+            theta
         ).add(_center);
     }
 
