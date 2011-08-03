@@ -354,7 +354,7 @@ exports.create = function(){
 
 // Utils
 
-function rotateVec2 = function(v, theta){
+function rotateVec2(v, theta){
     var st = Math.sin(theta);
     var ct = Math.cos(theta);
     return this.set(
