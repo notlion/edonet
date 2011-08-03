@@ -57,3 +57,5 @@ Rect2.prototype = {
     }
 
 };
+
+exports.Rect2 = Rect2;
