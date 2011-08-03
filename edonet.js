@@ -1,8 +1,10 @@
 var plask    = require("plask");
 var particle = require("./particle");
+var rect     = require("./rect");
 
 var lerp      = plask.lerp;
 var Vec2      = plask.Vec2;
+var Rect2     = rect.Rect2;
 var Particle2 = particle.Particle2;
 
 exports.create = function(){
@@ -30,7 +32,7 @@ exports.create = function(){
                 length: length,
                 power:  power,
                 hard:   false,
-                bounds: new Rect2(0, 0, 0, 0)
+                bounds: new Rect2(node1.pos, node2.pos).canonicalize()
             };
             _links.push(link);
             createLocalLink(node1, node2, link);
@@ -133,21 +135,6 @@ exports.create = function(){
     }
 
 
-    // function updateSharedLinkBounds(){
-    //     var link, n1, n2;
-    //     for(i = _links.length; --i >= 0;){
-    //         link = _links[i];
-    //         n1 = link.node1;
-    //         n2 = link.node2;
-    //         link.bounds.set(
-    //             n2.pos.x < n1.pos.x ? n2.pos.x - n2.radius : n1.pos.x - n1.radius,
-    //             n2.pos.y < n1.pos.y ? n2.pos.y - n2.radius : n1.pos.y - n1.radius,
-    //             n2.pos.x > n1.pos.x ? n2.pos.x + n2.radius : n1.pos.x + n1.radius,
-    //             n2.pos.y > n1.pos.y ? n2.pos.y + n2.radius : n1.pos.y + n1.radius
-    //         );
-    //     }
-    // }
-
     function updateChains(){
         _chains = [];
         var i, node;
@@ -237,22 +224,22 @@ exports.create = function(){
             }
             this.vel.add(force.scale((1 / num_affectors) * _globals.stiffness));
         }
-
-        // Avoid all non-connected links
-        // var link, t, p1, p2, avoid_pos, avoid_radius, avoid_dist;
-        // for(var i = _links.length; --i >= 0;){
-        //     link = _links[i];
-        //     if(!(link.node1.id in this.links || link.node2.id in this.links)){
-        //         p1 = link.node1.pos;
-        //         p2 = link.node2.pos;
-        //         t = plask.clamp(nearestPointOnLine(this.pos, p1, p2), 0, 1);
-        //         avoid_pos    = p1.lerped(p2, t);
-        //         avoid_radius = plask.lerp(link.node1.radius, link.node2.radius, t);
-        //         avoid_dist   = this.radius + avoid_radius;
-        //         if(this.pos.distSquared(avoid_pos) < avoid_dist * avoid_dist)
-        //             this.spring(avoid_pos, avoid_dist, avoid_radius / this.radius * _globals.avoidance);
-        //     }
-        // }
+    };
+    Node.prototype.avoidLinks = function(){
+        var link, t, p1, p2, avoid_pos, avoid_radius, avoid_dist;
+        for(var i = _links.length; --i >= 0;){
+            link = _links[i];
+            if(!(link.node1.id in this.links || link.node2.id in this.links)){
+                p1 = link.node1.pos;
+                p2 = link.node2.pos;
+                t = plask.clamp(nearestPointOnLine(this.pos, p1, p2), 0, 1);
+                avoid_pos    = p1.lerped(p2, t);
+                avoid_radius = plask.lerp(link.node1.radius, link.node2.radius, t);
+                avoid_dist   = this.radius + avoid_radius;
+                if(this.pos.distSquared(avoid_pos) < avoid_dist * avoid_dist)
+                    this.spring(avoid_pos, avoid_dist, avoid_radius / this.radius * _globals.avoidance);
+            }
+        }
     };
     Node.prototype.calcLinkNormals = function(){
         var link;
@@ -336,21 +323,6 @@ exports.create = function(){
 
 
 // Utils
-
-function Rect2(){
-    this.set.apply(this, arguments);
-}
-Rect2.prototype.set = function(x1, y1, x2, y2){
-    this.x1 = x1;
-    this.y1 = y1;
-    this.x2 = x2;
-    this.y2 = y2;
-    return this;
-};
-Rect2.prototype.contains = function(pnt){
-    return (pnt.x >= this.x1) && (pnt.x <= this.x2) &&
-           (pnt.y >= this.y1) && (pnt.y <= this.y2);
-};
 
 function regPolyEdgeLen(num_sides){
     return Math.sin(Math.PI / num_sides) * 2;

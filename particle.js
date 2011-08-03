@@ -2,7 +2,7 @@
 
 var plask = require('plask');
 
-
+var Vec2     = plask.Vec2;
 var kEpsilon = Math.pow(2, -24);
 
 
@@ -28,8 +28,8 @@ Particle1.prototype = {
 
 
 function Particle2(){
-    this.pos = new plask.Vec2(0, 0);
-    this.vel = new plask.Vec2(0, 0);
+    this.pos = new Vec2(0, 0);
+    this.vel = new Vec2(0, 0);
 }
 
 Particle2.prototype = {
@@ -59,15 +59,15 @@ Particle2.getSpringForce = function(pos1, pos2, length){
     var mag = Math.sqrt(ox * ox + oy * oy);
     if(mag > kEpsilon){
         var power = mag - length;
-        return new plask.Vec2(ox / mag * power, oy / mag * power);
+        return new Vec2(ox / mag * power, oy / mag * power);
     }
-    return new plask.Vec2(0, 0);
+    return new Vec2(0, 0);
 }
 
 
 function Particle3(){
-    this.pos = new plask.Vec3(0, 0, 0);
-    this.vel = new plask.Vec3(0, 0, 0);
+    this.pos = new Vec3(0, 0, 0);
+    this.vel = new Vec3(0, 0, 0);
 }
 
 Particle3.prototype = {
